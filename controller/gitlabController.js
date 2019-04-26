@@ -323,6 +323,9 @@ class gitlabController extends baseController {
         }
 
         for (let i = 0; i < body.length; i++) {
+            if (!body[i].name_with_namespace) {
+                continue
+            }
             let nameWithSpace = body[i].name_with_namespace.replace(new RegExp(' ', 'gm'), '');
             if (nameWithSpace.indexOf(groupName + '/' + name) > -1) {
                 return body[i]
