@@ -31,11 +31,11 @@ class oauth2Controller {
             const {
                 access_token
             } = await this.requestInfo(ops, tokenpath, 'post')
-            ctx.redirect('/api/user/login_by_token?token=' + jsonRes.access_token);
+            ctx.redirect('/api/user/login_by_token?token=' + access_token);
         } catch (e) {
             ctx.body = {
-                status_code: e.response.statusCode,
-                message: e.body
+                status_code: e.response && e.response.statusCode || 401,
+                message: e.message
             }
         }
     }
