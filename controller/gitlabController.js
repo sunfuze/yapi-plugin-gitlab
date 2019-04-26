@@ -318,8 +318,8 @@ class gitlabController extends baseController {
             throw new Error('not find ' + tag)
         }
 
-        if (tag === 'groups' && name === array[0].name) {
-            return array[0]
+        if (tag === 'groups' && name === body[0].name) {
+            return body[0]
         }
 
         for (let i = 0; i < body.length; i++) {
