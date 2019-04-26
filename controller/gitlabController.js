@@ -1,48 +1,44 @@
 const yapi = require('yapi.js');
 const baseController = require('controllers/base.js');
-const request = require('request');
+const request = require('request-promise');
 const userModel = require('models/user.js');
 const projectModel = require('models/project.js');
 const interfaceColModel = require('models/interfaceCol.js');
 const interfaceCatModel = require('models/interfaceCat.js');
 const groupModel = require('models/group.js');
 
-class gitlabController extends baseController{
+class gitlabController extends baseController {
     constructor(ctx) {
         super(ctx);
         // 给group添加通过名称查询的方法
-        groupModel.prototype.getByName = function (groupName) {
+        groupModel.prototype.getByName = function(groupName) {
             return this.model
                 .findOne({
                     group_name: groupName
                 }).exec();
         };
         // 覆盖所有members
-        groupModel.prototype.updateAll = function (data) {
-            return this.model.updateOne(
-                {
-                    '_id': data._id
-                },
-                {
-                    $set: {
-                        'members': data.members
-                    }
-                },
-                { multi: true }
-            );
+        groupModel.prototype.updateAll = function(data) {
+            return this.model.updateOne({
+                '_id': data._id
+            }, {
+                $set: {
+                    'members': data.members
+                }
+            }, {
+                multi: true
+            });
         };
-        projectModel.prototype.updateAll = function (data) {
-            return this.model.updateOne(
-                {
-                    '_id': data._id
-                },
-                {
-                    $set: {
-                        'members': data.members
-                    }
-                },
-                { multi: true }
-            );
+        projectModel.prototype.updateAll = function(data) {
+            return this.model.updateOne({
+                '_id': data._id
+            }, {
+                $set: {
+                    'members': data.members
+                }
+            }, {
+                multi: true
+            });
         };
         this.groupModel = yapi.getInst(groupModel);
         this.projectModel = yapi.getInst(projectModel);
@@ -102,7 +98,7 @@ class gitlabController extends baseController{
                 basepath: '',
                 group_id: group._id,
                 group_name: group.group_name,
-                project_type: params.project_visibility === 'visibilitylevel|private'?'private':'public'
+                project_type: params.project_visibility === 'visibilitylevel|private' ? 'private' : 'public'
             });
         } else {
             return (ctx.body = yapi.commons.resReturn(null, 500, '无法获取分组名称'));
@@ -179,19 +175,13 @@ class gitlabController extends baseController{
      * @returns {Promise<any>}
      */
     getGitLabUser(ops, token) {
-        return new Promise((resolve, reject)=>{
-            request(ops.host + ops.loginPath, {
-                method: 'get',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            },function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    resolve(JSON.parse(body));
-                }
-                reject(body);
-            })
-        });
+        return request.get({
+            uri: ops.host + ops.loginPath,
+            headers: {
+                Authorization: 'Bearer ' + token
+            },
+            json: true
+        })
     }
 
     /**
@@ -201,19 +191,13 @@ class gitlabController extends baseController{
      * @returns {Promise<any>}
      */
     searchGitLabProjectById(ops, id) {
-        return new Promise((resolve, reject)=>{
-            request(ops.host + '/api/v4/projects/' + id, {
-                method: 'get',
-                headers: {
-                    'Private-Token': ops.accessToken
-                }
-            },function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    resolve(JSON.parse(body));
-                }
-                reject(body);
-            })
-        });
+        return request.get({
+            uri: ops.host + '/api/v4/projects/' + id,
+            headers: {
+                'Private-Token': ops.accessToken
+            },
+            json: true
+        })
     }
 
     /**
@@ -223,19 +207,13 @@ class gitlabController extends baseController{
      * @returns {Promise<any>}
      */
     searchGitLabUserById(ops, id) {
-        return new Promise((resolve, reject)=>{
-            request(ops.host + '/api/v4/users/' + id, {
-                method: 'get',
-                headers: {
-                    'Private-Token': ops.accessToken
-                }
-            },function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    resolve(JSON.parse(body));
-                }
-                reject(body);
-            })
-        });
+        return request.get({
+            uri: ops.host + '/api/v4/users/' + id,
+            headers: {
+                'Private-Token': ops.accessToken
+            },
+            json: true
+        })
     }
 
     /**
@@ -295,20 +273,14 @@ class gitlabController extends baseController{
      * @param id
      * @returns {Promise<*>}
      */
-    async searchGitlabMember(ops, id, tag) {
-        return new Promise((resolve, reject)=>{
-            request(ops.host + '/api/v4/' + tag + '/' + id + '/members', {
-                method: 'get',
-                headers: {
-                    'Private-Token': ops.accessToken
-                }
-            },function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    resolve(JSON.parse(body));
-                }
-                reject(body);
-            })
-        });
+    searchGitlabMember(ops, id, tag) {
+        return request.get({
+            uri: ops.host + '/api/v4/' + tag + '/' + id + '/members',
+            headers: {
+                'Private-Token': ops.accessToken
+            },
+            json: true
+        })
     }
 
     /**
@@ -317,20 +289,14 @@ class gitlabController extends baseController{
      * @param id
      * @returns {Promise<*>}
      */
-    async searchGitLabGroupById(ops, id) {
-        return new Promise((resolve, reject)=>{
-            request(ops.host + '/api/v4/groups/' + id, {
-                method: 'get',
-                headers: {
-                    'Private-Token': ops.accessToken
-                }
-            },function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    resolve(JSON.parse(body));
-                }
-                reject(body);
-            })
-        });
+    searchGitLabGroupById(ops, id) {
+        return request.get({
+            uri: ops.host + '/api/v4/groups/' + id,
+            headers: {
+                'Private-Token': ops.accessToken
+            },
+            json: true
+        })
     }
 
     /**
@@ -340,34 +306,30 @@ class gitlabController extends baseController{
      * @returns {Promise<*>}
      */
     async searchGitLabGroup(ops, name, tag, groupName) {
-        return new Promise((resolve, reject)=>{
-            request(ops.host + '/api/v4/' + tag + '?search=' + name, {
-                method: 'get',
-                headers: {
-                    'Private-Token': ops.accessToken
-                }
-            },function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    let array = JSON.parse(body);
-                    if (!Array.isArray(array) || array.length < 1) {
-                        reject({message: 'not find ' + tag});
-                    } else {
-                        if (tag === 'groups' && name === array[0].name) {
-                            resolve(array[0]);
-                        } else {
-                            for (let i = 0; i < array.length; i++) {
-                                let nameWithSpace = array[i].name_with_namespace.replace(new RegExp(' ','gm'), '');
-                                if (nameWithSpace.indexOf(groupName + '/' + name) > -1) {
-                                    resolve(array[i]);
-                                }
-                            }
-                        }
-                        reject({message: 'not find ' + tag});
-                    }
-                }
-                reject(body);
-            })
-        });
+        const body = await request.get({
+            uri: ops.host + '/api/v4/' + tag + '?search=' + name,
+            headers: {
+                'Private-Token': ops.accessToken
+            },
+            json: true
+        })
+
+        if (!Array.isArray(body) || body.length === 0) {
+            throw new Error('not find ' + tag)
+        }
+
+        if (tag === 'groups' && name === array[0].name) {
+            return array[0]
+        }
+
+        for (let i = 0; i < body.length; i++) {
+            let nameWithSpace = body[i].name_with_namespace.replace(new RegExp(' ', 'gm'), '');
+            if (nameWithSpace.indexOf(groupName + '/' + name) > -1) {
+                return body[i]
+            }
+        }
+
+        throw new Error('not found ' + tag)
     }
 
     /**
@@ -384,7 +346,7 @@ class gitlabController extends baseController{
             let user = await this.handleThirdLogin(gitlabUser[ops.emailKey], gitlabUser[ops.userKey])
             owners.push({
                 _role: user.role,
-                role: members[i].access_level > 30? 'owner' : members[i].access_level > 20? 'dev' : 'guest',
+                role: members[i].access_level > 30 ? 'owner' : members[i].access_level > 20 ? 'dev' : 'guest',
                 uid: user._id,
                 username: user.username,
                 email: user.email
@@ -406,7 +368,7 @@ class gitlabController extends baseController{
         let username = this.$user.username;
         yapi.commons.saveLog({
             content: `<a href="/user/profile/${this.getUid()}">${username}</a> 从gitlab同步了分组`,
-            type: tag === 'groups'?'group':'project',
+            type: tag === 'groups' ? 'group' : 'project',
             uid: this.getUid(),
             username: username,
             typeid: id
@@ -424,7 +386,7 @@ class gitlabController extends baseController{
      */
     async addGroup(params) {
         let owners = [];
-        if(params.owner_uids.length === 0){
+        if (params.owner_uids.length === 0) {
             params.owner_uids.push(
                 this.getUid()
             )
@@ -515,7 +477,10 @@ class gitlabController extends baseController{
             add_time: yapi.commons.time(),
             up_time: yapi.commons.time(),
             is_json5: false,
-            env: [{ name: 'local', domain: 'http://127.0.0.1' }]
+            env: [{
+                name: 'local',
+                domain: 'http://127.0.0.1'
+            }]
         };
 
         let result = await this.projectModel.save(data);

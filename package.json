@@ -3,17 +3,17 @@
   "version": "1.0.1",
   "description": "devops with gitlab for yapi",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "homepage": "https://github.com/cyj0122/yapi-plugin-gitlab",
+  "homepage": "https://github.com/sunfuze/yapi-plugin-gitlab",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:cyj0122/yapi-plugin-gitlab.git"
+    "url": "git+ssh://git@github.com:sunfuze/yapi-plugin-gitlab.git"
   },
-  "author": {
+  "authors": [{
     "name": "cyj0122",
     "email": "269873721@qq.com"
-  },
+  }, {
+    "name": "sunfuze",
+    "email": "sunfuze.1989@gmail.com"
+  }],
   "license": "ISC"
 }
