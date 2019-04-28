@@ -283,7 +283,7 @@ class gitlabController extends baseController{
         headers: {
           'Private-Token': ops.accessToken
         },
-        query: { per_page: 1000 },
+        qs: { per_page: 1000 },
         json: true
       })
     }
