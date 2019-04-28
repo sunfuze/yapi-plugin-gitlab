@@ -323,8 +323,8 @@ class gitlabController extends baseController{
         throw new Error('not find ' + tag)
       }
 
-      if (tag === 'groups' && name === array[0].name) {
-        return array[0]
+      if (tag === 'groups' && name === body[0].name) {
+        return body[0]
       }
 
       for (let i = 0; i < body.length; i++) {
@@ -335,35 +335,6 @@ class gitlabController extends baseController{
       }
 
       throw new Error('not found ' + tag)
-
-        return new Promise((resolve, reject)=>{
-            request(ops.host + '/api/v4/' + tag + '?search=' + name, {
-                method: 'get',
-                headers: {
-                    'Private-Tokoen': ops.accessToken
-                }
-            },function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    let array = JSON.parse(body);
-                    if (!Array.isArray(array) || array.length < 1) {
-                        reject({message: 'not find ' + tag});
-                    } else {
-                        if (tag === 'groups' && name === array[0].name) {
-                            resolve(array[0]);
-                        } else {
-                            for (let i = 0; i < array.length; i++) {
-                                let nameWithSpace = array[i].name_with_namespace.replace(new RegExp(' ','gm'), '');
-                                if (nameWithSpace.indexOf(groupName + '/' + name) > -1) {
-                                    resolve(array[i]);
-                                }
-                            }
-                        }
-                        reject({message: 'not find ' + tag});
-                    }
-                }
-                reject(body);
-            })
-        });
     }
 
     /**
