@@ -8,12 +8,18 @@
     "type": "git",
     "url": "git+ssh://git@github.com:sunfuze/yapi-plugin-gitlab.git"
   },
-  "authors": [{
-    "name": "cyj0122",
-    "email": "269873721@qq.com"
-  }, {
-    "name": "sunfuze",
-    "email": "sunfuze.1989@gmail.com"
-  }],
-  "license": "ISC"
+  "authors": [
+    {
+      "name": "cyj0122",
+      "email": "269873721@qq.com"
+    },
+    {
+      "name": "sunfuze",
+      "email": "sunfuze.1989@gmail.com"
+    }
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "request-promise": "^4.2.6"
+  }
 }
